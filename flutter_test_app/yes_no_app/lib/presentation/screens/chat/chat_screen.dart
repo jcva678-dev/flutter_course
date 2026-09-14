@@ -1,7 +1,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
+import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -47,11 +49,13 @@ class _ChatView extends StatelessWidget {
               // el historial del chat sin crear todos sus elementos a la vez.
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  return MyMessageBubble();
+                  return (index %2 == 0)
+                      ? const MyMessageBubble()
+                      : const HerMessageBubble();
                 },
               ),
             ),
-            Text("Hola mundo"),
+            const MessageFieldBox(),
           ],
         ),
       ),
