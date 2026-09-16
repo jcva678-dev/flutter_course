@@ -5,6 +5,22 @@ class MessageFieldBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // NOTA DE CICLO DE VIDA:
+    // Para este ejercicio están creados dentro de build(), pero en un widget
+    // real conviene conservar el TextEditingController y el FocusNode en el
+    // State de un StatefulWidget y liberarlos posteriormente con dispose().
+
+    // Permite leer y modificar desde Dart el contenido del TextFormField.
+    // Es importante conectarlo al campo mediante `controller: textController`;
+    // de lo contrario, el campo usaría su propio controlador interno y este
+    // objeto no tendría acceso al texto escrito por el usuario.
+    final textController= TextEditingController();
+
+    // Representa el foco del campo: indica si este es el elemento que está
+    // recibiendo la entrada del teclado. Nos permite quitar el foco para
+    // ocultar el teclado o solicitarlo para continuar escribiendo.
+    final focusNode = FocusNode();
     // Obtiene los colores del tema activo. Así el borde del campo se adapta
     // automáticamente cuando la aplicación cambie de paleta o de modo.
     final colorScheme = Theme.of(context).colorScheme;
@@ -24,6 +40,7 @@ class MessageFieldBox extends StatelessWidget {
     // InputDecoration reúne la configuración visual de TextFormField; no se
     // dibuja por sí sola, sino que se entrega al campo más abajo.
     final inputDecoration =InputDecoration(
+        hintText:'End your message with a "?"',
         // Borde visible mientras el campo está habilitado pero sin selección.
         enabledBorder: outlineInputBorder,
         // Borde visible cuando el usuario toca el campo y escribe en él.
@@ -35,6 +52,15 @@ class MessageFieldBox extends StatelessWidget {
           icon: const Icon(Icons.send_outlined),
           // Aquí irá la lógica que toma el texto actual y lo agrega al chat.
           onPressed: () {
+            // onPressed no recibe el texto como parámetro, porque pertenece al
+            // botón y no al TextFormField. Por eso se consulta el controlador.
+            // `textController.text` sería una forma equivalente y más breve.
+            final message = textController.value.text;
+            print('Mensaje enviado: $message');
+
+            // Como el controlador está conectado al campo, clear() actualiza
+            // tanto su valor interno como el texto que se ve en la pantalla.
+            textController.clear(); // Limpia el contenido del campo de texto
             // Acción al presionar el botón de enviar
           },
         ));
@@ -43,18 +69,32 @@ class MessageFieldBox extends StatelessWidget {
     // TextFormField muestra el campo de texto y permite integrarlo después
     // con un Form para validación. Su apariencia viene de inputDecoration.
     return TextFormField(
+      // Flutter llama a este callback cuando el usuario toca fuera del campo.
+      onTapOutside: (event) {
+        // Al quitar el foco, normalmente también se oculta el teclado móvil.
+        focusNode.unfocus();
+      },
+
+      // Conecta el campo con el objeto que administra su foco.
+      focusNode: focusNode,
+
+      // Conecta el texto visible del campo con el controlador creado arriba.
+      controller: textController,
       decoration: inputDecoration ,
       // Se ejecuta al confirmar desde el teclado, por ejemplo pulsando Enter
       // o el botón de enviar que muestra el teclado del teléfono.
       onFieldSubmitted: (value) {
-        // Acción al enviar el mensaje
-        print('Mensaje enviado: $value');
-      },
-      // Se ejecuta cada vez que cambia el contenido: value contiene el texto
-      // completo que el usuario lleva escrito en ese instante.
-      onChanged: (value) {
-        // Acción al cambiar el contenido del campo de texto
-        print('Contenido del campo de texto: $value');
+        // A diferencia de onPressed, este callback pertenece al campo y
+        // Flutter entrega directamente el texto enviado en `value`.
+        // En este instante, normalmente se cumple:
+        // value == textController.text
+        print('Submit value $value');
+
+        textController.clear(); // Limpia el contenido del campo de texto
+
+        // Después de enviar, devuelve el foco al campo para que el usuario
+        // pueda escribir otro mensaje sin tener que tocarlo nuevamente.
+        focusNode.requestFocus();
       },
     );
   }
