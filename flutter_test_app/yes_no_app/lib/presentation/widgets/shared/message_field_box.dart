@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 
 class MessageFieldBox extends StatelessWidget {
-  const MessageFieldBox({super.key});
+
+  // ValueChanged<String> describe un callback que recibe el texto enviado.
+  // Este widget solo captura el texto; su padre decide qué hacer con él.
+  final ValueChanged<String> onValue;
+  const MessageFieldBox({super.key, required this.onValue});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +63,10 @@ class MessageFieldBox extends StatelessWidget {
             // botón y no al TextFormField. Por eso se consulta el controlador.
             // `textController.text` sería una forma equivalente y más breve.
             final message = textController.value.text;
-            print('Mensaje enviado: $message');
+
+            // Delega la acción al padre. El mismo callback se usa abajo al
+            // pulsar "Done", para que ambos modos sigan el mismo flujo.
+            onValue(message);
 
             // Como el controlador está conectado al campo, clear() actualiza
             // tanto su valor interno como el texto que se ve en la pantalla.
@@ -88,7 +98,8 @@ class MessageFieldBox extends StatelessWidget {
         // Flutter entrega directamente el texto enviado en `value`.
         // En este instante, normalmente se cumple:
         // value == textController.text
-        print('Submit value $value');
+        // value ya es el String del campo en el instante de confirmar.
+        onValue(value);
 
         textController.clear(); // Limpia el contenido del campo de texto
 

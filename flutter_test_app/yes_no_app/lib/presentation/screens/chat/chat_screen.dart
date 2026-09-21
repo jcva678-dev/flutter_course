@@ -1,6 +1,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
@@ -33,6 +36,10 @@ class _ChatView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Evita que el contenido quede debajo de zonas del sistema, como la barra
     // de estado, la cámara frontal o la barra de navegación del dispositivo.
+
+    // watch registra esta vista como oyente. Cuando el provider notifique un
+    // cambio, Flutter volverá a ejecutar este build con la lista actualizada.
+    final chatProvider = context.watch<ChatProvider>();
     return SafeArea(
       // Separa horizontalmente el contenido de los bordes de la pantalla para
       // que los mensajes y el campo de texto no queden demasiado pegados.
@@ -48,14 +55,23 @@ class _ChatView extends StatelessWidget {
               // Construye los mensajes bajo demanda y permite desplazarse por
               // el historial del chat sin crear todos sus elementos a la vez.
               child: ListView.builder(
+                itemCount: chatProvider.messagesList.length,
                 itemBuilder: (context, index) {
-                  return (index %2 == 0)
-                      ? const MyMessageBubble()
-                      : const HerMessageBubble();
+                  // ListView.builder crea elementos bajo demanda; index señala
+                  // cuál mensaje de la lista corresponde dibujar aquí.
+                  final message = chatProvider.messagesList[index];
+                  return (message.fromWho == FromWho.me)
+                      ? MyMessageBubble(message: message)
+                      : HerMessageBubble();
                 },
               ),
             ),
-            const MessageFieldBox(),
+            MessageFieldBox(
+              // El campo comunica el texto hacia su padre mediante un callback.
+              // Así no necesita conocer directamente ChatProvider ni cómo se
+              // almacenan los mensajes.
+              onValue:(value) => chatProvider.sendMessage(value),
+            ),
           ],
         ),
       ),

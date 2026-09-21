@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
 
 class MyMessageBubble extends StatelessWidget {
-  const MyMessageBubble({super.key});
+  // Recibe un mensaje ya construido. Esta burbuja se limita a representarlo,
+  // sin conocer la lista del chat ni modificar su estado.
+  final Message message;
+  const MyMessageBubble({super.key, required this.message});
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +38,10 @@ class MyMessageBubble extends StatelessWidget {
           // Padding crea espacio dentro de la burbuja, entre sus bordes
           // decorados y el texto.
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding:  EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             // Text es el contenido más interno de esta rama de widgets.
             child: Text(
-              "lorem ipsum",
+              message.text,
               style: TextStyle(color: messageTextColor),
             ),
           ),
