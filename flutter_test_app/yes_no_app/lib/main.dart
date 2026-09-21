@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/screens/chat/chat_screen.dart';
 import 'package:yes_no_app/theme/app_theme.dart';
 
@@ -9,16 +11,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: CustomAppTheme(selectedColor: 5).theme(),
-      home: Scaffold(
-        // appBar: AppBar(title: const Text('Flutter Demo Home Page')),
-        // body: Center(
-        //   child: FilledButton.tonal(onPressed: () {}, child: Text('Click Me')),
-        // ),
-        body:ChatScreen()
+    return MultiProvider(
+      providers:[
+        ChangeNotifierProvider(create: (_) => ChatProvider(),)
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: CustomAppTheme(selectedColor: 5).theme(),
+        home: Scaffold(
+          // appBar: AppBar(title: const Text('Flutter Demo Home Page')),
+          // body: Center(
+          //   child: FilledButton.tonal(onPressed: () {}, child: Text('Click Me')),
+          // ),
+          body:ChatScreen()
+        ),
       ),
     );
   }
