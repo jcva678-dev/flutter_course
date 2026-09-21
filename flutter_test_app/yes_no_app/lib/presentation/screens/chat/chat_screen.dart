@@ -55,6 +55,7 @@ class _ChatView extends StatelessWidget {
               // Construye los mensajes bajo demanda y permite desplazarse por
               // el historial del chat sin crear todos sus elementos a la vez.
               child: ListView.builder(
+                controller: chatProvider.chatScrollController,
                 itemCount: chatProvider.messagesList.length,
                 itemBuilder: (context, index) {
                   // ListView.builder crea elementos bajo demanda; index señala

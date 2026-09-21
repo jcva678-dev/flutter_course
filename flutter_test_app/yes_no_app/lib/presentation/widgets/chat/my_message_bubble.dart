@@ -47,7 +47,7 @@ class MyMessageBubble extends StatelessWidget {
           ),
         ),
         // Separa esta burbuja del siguiente elemento del chat.
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
       ],
     );
   }
