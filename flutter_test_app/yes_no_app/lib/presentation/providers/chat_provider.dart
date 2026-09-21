@@ -11,7 +11,6 @@ class ChatProvider extends ChangeNotifier{
   ];
 
   Future<void> sendMessage(String text) async{
-    //TODO
     // Se crea la entidad con sus datos y después se incorpora al estado.
     final newMessage = Message(text: text, fromWho: FromWho.me);
     messagesList.add(newMessage);
