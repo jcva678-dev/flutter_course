@@ -4,7 +4,12 @@ import 'package:yes_no_app/domain/entities/message.dart';
 
 class ChatProvider extends ChangeNotifier{
 
+  // Controla programáticamente la posición del ListView del chat. La pantalla
+  // lo recibe mediante su propiedad controller para compartir el scroll.
   final ScrollController chatScrollController = ScrollController();
+
+  // Este helper encapsula la petición HTTP y la conversión de la respuesta a
+  // Message; el provider solo coordina el estado del chat.
   final GetYesNoAnswer getYesNoAnswer = GetYesNoAnswer();
 
   // Estado temporal del chat en memoria. ChangeNotifier permite avisar a la
@@ -22,6 +27,8 @@ class ChatProvider extends ChangeNotifier{
     messagesList.add(newMessage);
 
     if (text.endsWith('?')) {
+      // No se espera la respuesta para que el mensaje propio aparezca de
+      // inmediato. herReply notificará a la interfaz cuando la API responda.
       herReply();
     }
 
@@ -32,6 +39,8 @@ class ChatProvider extends ChangeNotifier{
   }
 
   Future<void> moveScrollToBottom() async{
+    // El breve retraso permite que notifyListeners() reconstruya el ListView
+    // antes de calcular maxScrollExtent, que incluye el mensaje nuevo.
     await Future.delayed(const Duration(milliseconds: 100));
     chatScrollController.animateTo(
       chatScrollController.position.maxScrollExtent, 
@@ -40,6 +49,8 @@ class ChatProvider extends ChangeNotifier{
   }
 
   Future<void> herReply() async{
+    // La llamada HTTP puede tardar o fallar; al terminar, la respuesta ya llega
+    // convertida en una entidad Message lista para agregar al estado.
     final herMessage = await getYesNoAnswer.getAnswer();
     messagesList.add(herMessage);
     notifyListeners();

@@ -55,6 +55,8 @@ class _ChatView extends StatelessWidget {
               // Construye los mensajes bajo demanda y permite desplazarse por
               // el historial del chat sin crear todos sus elementos a la vez.
               child: ListView.builder(
+                // El mismo controlador que usa ChatProvider permite mover la
+                // lista al final al agregar un mensaje o recibir una respuesta.
                 controller: chatProvider.chatScrollController,
                 itemCount: chatProvider.messagesList.length,
                 itemBuilder: (context, index) {
@@ -63,7 +65,7 @@ class _ChatView extends StatelessWidget {
                   final message = chatProvider.messagesList[index];
                   return (message.fromWho == FromWho.me)
                       ? MyMessageBubble(message: message)
-                      : HerMessageBubble();
+                      : HerMessageBubble(message: message);
                 },
               ),
             ),

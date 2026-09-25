@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
 
 class HerMessageBubble extends StatelessWidget {
-  const HerMessageBubble({super.key});
+  final Message message;
+
+  const HerMessageBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class HerMessageBubble extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             // Text es el contenido más interno de esta rama de widgets.
             child: Text(
-              "Hola beibi",
+              message.text,
               style: TextStyle(color: messageTextColor),
             ),
           ),
@@ -47,7 +50,10 @@ class HerMessageBubble extends StatelessWidget {
         // Deja espacio vertical antes de mostrar la imagen de la respuesta.
         const SizedBox(height: 10),
         // Widget privado encargado únicamente de construir la imagen/GIF.
-        _ImageBubble(),
+        // `!` afirma que los mensajes de la API siempre incluyen imageUrl;
+        // si más adelante hubiera respuestas sin imagen, aquí habría que
+        // comprobar null antes de crear _ImageBubble.
+        _ImageBubble(imageUrl: message.imageUrl!,),
         // Deja una separación antes del siguiente mensaje del ListView.
         const SizedBox(height: 10),
       ],
@@ -56,6 +62,9 @@ class HerMessageBubble extends StatelessWidget {
 }
 
 class _ImageBubble extends StatelessWidget {
+  final String imageUrl;
+  const _ImageBubble({required this.imageUrl});
+
   @override
   Widget build(BuildContext context) {
     // MediaQuery obtiene información del espacio disponible en la pantalla.
@@ -68,7 +77,7 @@ class _ImageBubble extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       // Image.network descarga y muestra una imagen desde una URL. Flutter
       // mostrará el GIF animado cuando termine de cargarse.
-      child: Image.network("https://yesno.wtf/assets/no/8-5e08abbe5aacd2cf531948145b787e9a.gif",
+      child: Image.network(imageUrl,
        // Usa el 70 % del ancho disponible, por lo que la imagen se adapta a
        // móviles anchos o estrechos sin tener un ancho fijo en píxeles.
        width: size.width * 0.7,

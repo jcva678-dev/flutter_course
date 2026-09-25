@@ -13,6 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers:[
+        // Hace una única instancia de ChatProvider disponible para cualquier
+        // widget descendiente que la lea con context.watch o context.read.
         ChangeNotifierProvider(create: (_) => ChatProvider(),)
       ],
       child: MaterialApp(
