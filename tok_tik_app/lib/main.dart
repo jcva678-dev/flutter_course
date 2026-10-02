@@ -14,8 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
+
       providers: [
-        ChangeNotifierProvider(create: (_) => DiscoverProvider())
+        ChangeNotifierProvider(
+          // `_` representa el BuildContext que create recibe pero no necesita.
+          // El operador de cascada (`..`) llama loadNextPage() sobre la misma
+          // instancia recién creada y, aun así, la expresión devuelve el
+          // DiscoverProvider para que Provider pueda administrarlo.
+          create: (_) => DiscoverProvider()..loadNextPage())
       ],
       child: MaterialApp(
         title: 'TokTik',
