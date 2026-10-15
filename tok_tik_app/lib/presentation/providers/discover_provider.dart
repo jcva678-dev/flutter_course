@@ -20,9 +20,11 @@ class DiscoverProvider extends ChangeNotifier{
   List<VideoPost> videos = [];
 
   Future<void> loadNextPage() async{
-    // Simula la espera que habría al cargar una página desde una API. await no
-    // bloquea la interfaz; únicamente pausa esta función asíncrona.
-    await Future.delayed(const Duration(seconds: 2));
+    // Provider inicia este método al crear el estado. Ahora no hay una espera:
+    // la transformación local ocurre enseguida y el indicador de carga podría
+    // no alcanzar a verse. El Future.delayed comentado serviría para simular
+    // una solicitud lenta durante el ejercicio.
+    // await Future.delayed(const Duration(seconds: 2));
 
     // map transforma cada mapa local en una entidad VideoPost. toList() es
     // necesario porque map devuelve un Iterable perezoso y videos necesita
@@ -31,7 +33,7 @@ class DiscoverProvider extends ChangeNotifier{
       (video) => LocalVideoModel.fromJson(video).toVideoPostEntity()
     ).toList();
 
-    // addAll conserva los videos que ya existían y añade la nueva página.
+    // addAll conserva los videos que ya existían y añade esta tanda local.
     videos.addAll(newVideos);
     initialLoading = false;
 

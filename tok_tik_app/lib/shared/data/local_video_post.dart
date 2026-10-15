@@ -1,10 +1,12 @@
 
 
+// Datos de prueba en memoria. Cada mapa imita un registro que después podría
+// venir de un archivo JSON o de un servicio; no se leen desde el disco aquí.
 List<Map<String, dynamic>> videoPosts = [
   {
     'name': 'Subiendo escaleras automáticas',
     'videoUrl': 'assets/videos/1.mp4',
-    'likes': 23230,
+    'likes': 230230,
     'views': 1523,
   },
   {
